@@ -166,7 +166,7 @@ namespace Weblog.Domain.Migrations
                     b.HasOne("Weblog.Domain.Models.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Article");

@@ -20,17 +20,24 @@ namespace Weblog.Domain.Models
         [MaxLength(500)]
         public string ShortDescription { get; set; }
         public string Image { get; set; }
+
         [Required] 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+
         [Required]
         public int UserId { get; set; }
+
+        [Required]
+        [ForeignKey("UserId")]
         public User User { get; set; }
+
         [Required]
         public int CategoryId { get; set; }
         [Required]
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }
+
         public List<Comment> Comments { get; set; }
         public string Status { get; set; }
 

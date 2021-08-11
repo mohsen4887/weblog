@@ -10,8 +10,8 @@ using Weblog.Domain;
 namespace Weblog.Domain.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210810054513_create_article_and_comment_entities")]
-    partial class create_article_and_comment_entities
+    [Migration("20210811043823_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -168,7 +168,7 @@ namespace Weblog.Domain.Migrations
                     b.HasOne("Weblog.Domain.Models.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Article");

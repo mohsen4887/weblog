@@ -15,16 +15,10 @@ namespace Weblog.Domain.Models
         [MaxLength(500)]
         public string Body { get; set; }
         public bool IsPublished { get; set; }
-        [Required]
         public int UserId { get; set; }
-        [Required]
-        [ForeignKey("UserId")]
-        public User User { get; set; }
-        [Required]
+        public  User User { get; set; }
         public int ArticleId { get; set; }
-        [Required]
-        [ForeignKey("ArticleId")]
-        public Article Article { get; set; }
+        public  Article Article { get; set; }
         public Comment()
         {
             

@@ -17,8 +17,8 @@ namespace Weblog.Domain.Models
         [Required]
         [MaxLength(200)]
         public string Email { get; set; }
-        public List<Article> Articles { get; set; }
-        public List<Comment> Comments { get; set; }
+        public  List<Article> Articles { get; set; }
+        public  List<Comment> Comments { get; set; }
         public User()
         {
             
