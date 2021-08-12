@@ -1,37 +1,61 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using Weblog.Domain;
+using Weblog.Domain.Models;
+using Weblog.Requests;
 
 namespace Weblog.Controllers
 {
     [Route("users")]
-    public class UserController
+    public class UserController : ControllerBase
     {
+        private readonly DatabaseContext _db;
         public UserController()
         {
-
+            this._db = new DatabaseContext();
         }
-        public string Index()
+        public List<User> Index()
         {
-            return "list of users";
+            var users = _db.Users.ToList();
+            return users;
         }
 
         [Route("{id}")]
-        public string Detail(string id)
+        public User Detail(string id)
         {
-            return $"user detail: {id}";
+            var user = this._db.Users.Find(id);
+            return user;
         }
 
 
         [HttpPost]
-        public string Store()
+        public IActionResult Store([FromBody] CreateUserRequest request)
         {
-            return "add new user";
+            try
+            {
+                var user = new User(request.Name, request.Email);
+                this._db.Users.Add(user);
+                _db.SaveChanges();
+                return Ok(user);
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
         [HttpPost]
         [Route("{id}")]
-        public string Update(string id)
+        public User Update(string id)
         {
-            return $"update user {id}";
+            var user = _db.Users.Find(id);
+            user.Name = "Mohsen";
+            _db.Users.Update(user);
+            _db.SaveChanges();
+            return user;
         }
 
 
@@ -39,7 +63,11 @@ namespace Weblog.Controllers
         [Route("{id}")]
         public string Delete(string id)
         {
-            return $"delete user {id}";
+            var user = _db.Users.Find(id);
+            _db.Users.Remove(user);
+            _db.SaveChanges();
+
+            return "success";
         }
 
     }
