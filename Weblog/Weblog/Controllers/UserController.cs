@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Weblog.Domain;
 using Weblog.Domain.Models;
 using Weblog.Requests;
+using Weblog.ViewModels;
 
 namespace Weblog.Controllers
 {
@@ -16,10 +17,20 @@ namespace Weblog.Controllers
         {
             this._db = new DatabaseContext();
         }
-        public List<User> Index()
+        public IActionResult Index()
         {
-            var users = _db.Users.ToList();
-            return users;
+            try
+            {
+                var users = _db.Users
+                    .Select(x => new UserVM(x.Id, x.Name, x.Email))
+                    .ToList();
+
+                return Ok(users);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
         [Route("{id}")]
@@ -38,7 +49,7 @@ namespace Weblog.Controllers
                 var user = new User(request.Name, request.Email);
                 this._db.Users.Add(user);
                 _db.SaveChanges();
-                return Ok(user);
+                return Ok(new UserVM(user.Id, user.Name, user.Email));
 
             }
             catch (Exception e)
