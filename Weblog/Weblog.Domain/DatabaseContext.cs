@@ -21,6 +21,9 @@ namespace Weblog.Domain
                 .HasForeignKey(c => c.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<User>()
+                .HasIndex(x => x.Email).IsUnique(true);
         }
 
 

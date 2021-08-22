@@ -34,10 +34,24 @@ namespace Weblog.Controllers
         }
 
         [Route("{id}")]
-        public User Detail(string id)
+        public IActionResult Detail(int id)
         {
-            var user = this._db.Users.Find(id);
-            return user;
+            try
+            {
+                var user = this._db.Users.Where(x => x.Id == id)
+                    .Select(x => new UserVM(x.Id,x.Name, x.Email))
+                    .FirstOrDefault();
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(user);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
 
@@ -60,25 +74,43 @@ namespace Weblog.Controllers
 
         [HttpPost]
         [Route("{id}")]
-        public User Update(string id)
+        public IActionResult Update(int id, [FromBody] UpdateUserRequest request)
         {
-            var user = _db.Users.Find(id);
-            user.Name = "Mohsen";
-            _db.Users.Update(user);
-            _db.SaveChanges();
-            return user;
+            try
+            {
+                var user = this._db.Users.Find(id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                user.Update(request.Name, request.Email);
+                _db.SaveChanges();
+                return Ok(new UserVM(user.Id, user.Name, user.Email));
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
 
         [HttpDelete]
         [Route("{id}")]
-        public string Delete(string id)
+        public IActionResult Delete(int id)
         {
-            var user = _db.Users.Find(id);
-            _db.Users.Remove(user);
-            _db.SaveChanges();
+            try
+            {
+                var user = _db.Users.Find(id);
+                _db.Users.Remove(user);
+                _db.SaveChanges();
 
-            return "success";
+                return Ok("Selected user removed successfully");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
     }
