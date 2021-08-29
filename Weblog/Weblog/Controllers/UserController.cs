@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Weblog.Domain;
 using Weblog.Domain.Models;
 using Weblog.Requests;
+using Weblog.Responses;
 using Weblog.ViewModels;
 
 namespace Weblog.Controllers
@@ -17,15 +19,34 @@ namespace Weblog.Controllers
         {
             this._db = new DatabaseContext();
         }
-        public IActionResult Index()
+        public IActionResult Index(UsersListRequest request)
         {
             try
             {
-                var users = _db.Users
+
+                var users = _db.Users.AsNoTracking();
+
+                if (request.Query != null)
+                {
+                    users = users.Where(x =>
+                        x.Name.Contains(request.Query) || x.Email.Contains(request.Query));
+                }
+
+                users = request.Sort switch
+                {
+                    "oldest" => users.OrderBy(x => x.Id),
+                    "latest" => users.OrderByDescending(x => x.Id),
+                    _ => users.OrderByDescending(x => x.Id)
+                };
+
+
+                var usersCount = users.Count();
+
+                var result = users.Skip((request.Page - 1) * request.PerPage).Take(request.PerPage)
                     .Select(x => new UserVM(x.Id, x.Name, x.Email))
                     .ToList();
 
-                return Ok(users);
+                return Ok(new UsersListResponse(result, usersCount));
             }
             catch (Exception e)
             {
