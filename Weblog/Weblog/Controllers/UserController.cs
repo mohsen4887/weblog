@@ -81,7 +81,7 @@ namespace Weblog.Controllers
         {
             try
             {
-                var user = new User(request.Name, request.Email);
+                var user = new User(request.Name, request.Email, request.Password);
                 this._db.Users.Add(user);
                 _db.SaveChanges();
                 return Ok(new UserVM(user.Id, user.Name, user.Email));
@@ -104,7 +104,7 @@ namespace Weblog.Controllers
                 {
                     return NotFound();
                 }
-                user.Update(request.Name, request.Email);
+                user.UpdateByAdmin(request.Name, request.Email, request.Password);
                 _db.SaveChanges();
                 return Ok(new UserVM(user.Id, user.Name, user.Email));
 
