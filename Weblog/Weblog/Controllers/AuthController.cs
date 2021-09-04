@@ -34,8 +34,9 @@ namespace Weblog.Controllers
                     return NotFound("کاربری با این آدرس ایمیل یافت نشد");
                 }
                 user.Login(request.Password);
+                _db.SaveChanges();
 
-                return Ok(new LoginResponse(user.Name, user.Email, user.Token));
+                return Ok(new LoginResponse(user.Id, user.Name, user.Email, user.Token));
             }
             catch (Exception e)
             {
@@ -57,8 +58,9 @@ namespace Weblog.Controllers
 
                 var user = new User(request.Name, request.Email, request.Password);
                 user.Login(request.Password);
+                _db.SaveChanges();
 
-                return Ok(new LoginResponse(user.Name, user.Email, user.Token));
+                return Ok(new LoginResponse(user.Id, user.Name, user.Email, user.Token));
             }
             catch (Exception e)
             {
