@@ -43,7 +43,7 @@ namespace Weblog.Controllers
                 var usersCount = users.Count();
 
                 var result = users.Skip((request.Page - 1) * request.PerPage).Take(request.PerPage)
-                    .Select(x => new UserVM(x.Id, x.Name, x.Email))
+                    .Select(x => new UserVM(x.Id, x.Name, x.Email, x.IsAdmin))
                     .ToList();
 
                 return Ok(new UsersListResponse(result, usersCount));
@@ -60,7 +60,7 @@ namespace Weblog.Controllers
             try
             {
                 var user = this._db.Users.Where(x => x.Id == id)
-                    .Select(x => new UserVM(x.Id,x.Name, x.Email))
+                    .Select(x => new UserVM(x.Id,x.Name, x.Email, x.IsAdmin))
                     .FirstOrDefault();
                 if (user == null)
                 {
@@ -81,10 +81,10 @@ namespace Weblog.Controllers
         {
             try
             {
-                var user = new User(request.Name, request.Email, request.Password);
+                var user = new User(request.Name, request.Email, request.Password, request.IsAdmin);
                 this._db.Users.Add(user);
                 _db.SaveChanges();
-                return Ok(new UserVM(user.Id, user.Name, user.Email));
+                return Ok(new UserVM(user.Id, user.Name, user.Email, user.IsAdmin));
 
             }
             catch (Exception e)
@@ -104,9 +104,9 @@ namespace Weblog.Controllers
                 {
                     return NotFound();
                 }
-                user.UpdateByAdmin(request.Name, request.Email, request.Password);
+                user.UpdateByAdmin(request.Name, request.Email, request.Password, request.IsAdmin);
                 _db.SaveChanges();
-                return Ok(new UserVM(user.Id, user.Name, user.Email));
+                return Ok(new UserVM(user.Id, user.Name, user.Email, user.IsAdmin));
 
             }
             catch (Exception e)
