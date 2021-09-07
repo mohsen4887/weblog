@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Weblog.Domain;
 
 namespace Weblog.Domain.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20210907034733_updateCategoryRelations")]
+    partial class updateCategoryRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,6 +76,9 @@ namespace Weblog.Domain.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Order")
                         .HasColumnType("int");
 
@@ -86,6 +91,8 @@ namespace Weblog.Domain.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("ParentId");
 
@@ -178,8 +185,12 @@ namespace Weblog.Domain.Migrations
 
             modelBuilder.Entity("Weblog.Domain.Models.Category", b =>
                 {
-                    b.HasOne("Weblog.Domain.Models.Category", "Parent")
+                    b.HasOne("Weblog.Domain.Models.Category", null)
                         .WithMany("Children")
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("Weblog.Domain.Models.Category", "Parent")
+                        .WithMany()
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.NoAction);
 

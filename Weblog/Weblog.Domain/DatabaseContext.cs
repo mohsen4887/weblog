@@ -22,6 +22,14 @@ namespace Weblog.Domain
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<Category>()
+                .HasOne<Category>(u => u.Parent)
+                .WithMany(c => c.Children)
+                .HasForeignKey(c => c.ParentId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.NoAction);
+
+
             modelBuilder.Entity<User>()
                 .HasIndex(x => x.Email).IsUnique(true);
         }
