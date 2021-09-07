@@ -23,8 +23,8 @@ namespace Weblog.Domain
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Category>()
-                .HasOne<Category>(u => u.Parent)
-                .WithMany(c => c.Children)
+                .HasMany(c => c.Children)
+                .WithOne()
                 .HasForeignKey(c => c.ParentId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.NoAction);

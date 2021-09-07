@@ -23,12 +23,11 @@ namespace Weblog.Controllers
         {
             try
             {
-                var categories = _db.Categories.Where(c => c.ParentId == null)
-                    .Include(c => c.Children)
+                var categories = _db.Categories
                     .OrderBy(c => c.Order)
                     .ToList();
 
-                return Ok(categories);
+                return Ok(categories.Where(x => x.ParentId == null).ToList());
             }
             catch (Exception e)
             {
@@ -73,7 +72,12 @@ namespace Weblog.Controllers
         {
             try
             {
-                return BadRequest(new NotImplementedException());
+                var category = _db.Categories.Find(id);
+                return Ok(category);
+                _db.Categories.Remove(category);
+                _db.SaveChanges();
+
+                return Ok("Selected user removed successfully");
             }
             catch (Exception e)
             {

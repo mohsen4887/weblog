@@ -18,10 +18,6 @@ namespace Weblog.ViewModels
             ParentId = category.ParentId;
             Title = category.Title;
             Order = category.Order;
-            if (category.Children != null)
-            {
-                Children = category.Children.Select(c => new CategoryWithChildrenVM(c)).ToList();
-            }
         }
     }
 }

@@ -16,10 +16,9 @@ namespace Weblog.Domain.Models
         public string Title { get; set; }
         public int Order { get; set; }
         public int? ParentId { get; set; }
-        public Category? Parent { get; set; }
-        public ICollection<Category>? Children { get; set; }
+        public List<Category>? Children { get; set; }
 
-        public ICollection<Article> Articles { get; set; }
+        public List<Article> Articles { get; set; }
         public Category()
         {
             
