@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Weblog.Domain;
 using Weblog.Domain.Models;
 using Weblog.Requests;
 using Weblog.Responses;
+using Weblog.Services;
 using Weblog.ViewModels;
 
 namespace Weblog.Controllers
@@ -15,9 +18,13 @@ namespace Weblog.Controllers
     public class UserController : ControllerBase
     {
         private readonly DatabaseContext _db;
-        public UserController()
+        private readonly FileHandlerService _fs;
+        private readonly IHostingEnvironment _env;
+        public UserController(IHostingEnvironment env)
         {
             this._db = new DatabaseContext();
+            this._fs = new FileHandlerService(env);
+            _env = env;
         }
         public IActionResult Index(UsersListRequest request)
         {
@@ -127,6 +134,22 @@ namespace Weblog.Controllers
                 _db.SaveChanges();
 
                 return Ok("Selected user removed successfully");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+
+        [HttpPost]
+        [Route("image")]
+        public async Task<IActionResult> UploadImage([FromForm] UploadImageRequest request)
+        {
+            try
+            {
+                var result = await _fs.Store(request.Image);
+                return Ok(result);
             }
             catch (Exception e)
             {
